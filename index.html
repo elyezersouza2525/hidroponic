@@ -2,31 +2,40 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Torre Hidropônica</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Painel Torre Hidropônica</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { font-family: sans-serif; background-color: #f4f4f4; color: #333; text-align: center; padding: 20px; }
-        .card { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        h1 { color: #2e7d32; font-size: 22px; margin-bottom: 5px; }
-        .status-timer { font-size: 18px; color: #4CAF50; font-weight: bold; margin: 15px 0; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
-        .btn { border: none; border-radius: 8px; padding: 15px; font-weight: bold; cursor: pointer; transition: 0.3s; width: 100%; }
-        .btn-mode { background: #eee; color: #666; }
-        .btn-active { background: #ffeb3b !important; color: #000; }
-        .btn-off { background: #d32f2f; color: white; margin-top: 10px; }
-        .btn-on { background: #388e3c; color: white; margin-top: 10px; }
-        .timer-control { display: flex; align-items: center; justify-content: space-between; background: #fff; padding: 10px; border-radius: 10px; border: 1px solid #ddd; }
-        .timer-label { font-size: 12px; color: #777; margin-bottom: 5px; display: block; }
-        .stepper { font-size: 20px; font-weight: bold; color: #2e7d32; border: none; background: none; padding: 0 15px; cursor: pointer; }
+        :root { --primary: #2e7d32; --bg: #fdfdfd; --card-bg: #ffffff; --text: #333; --border: #eeeeee; --active-y: #ffeb3b; --red: #d32f2f; --green: #388e3c; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 15px; text-align: center; -webkit-tap-highlight-color: transparent; }
+        h1 { color: var(--primary); font-size: 20px; margin: 0 0 15px 0; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        h1::after { content: ''; display: inline-block; width: 10px; height: 10px; background-color: #4CAF50; border-radius: 50%; box-shadow: 0 0 8px rgba(76, 175, 80, 0.6); }
+        .card { background: var(--card-bg); border-radius: 12px; padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 15px; border: 1px solid #f9f9f9; }
+        .status-header { font-size: 16px; color: #4CAF50; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 15px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        .btn { border: none; border-radius: 6px; padding: 12px; font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.2s; width: 100%; text-transform: uppercase; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .btn-mode { background: #f0f0f0; color: #555; }
+        .btn-active { background: var(--active-y) !important; color: #000; }
+        .btn-off { background: var(--red); color: white; }
+        .btn-on { background: var(--green); color: white; }
+        .timer-title { font-size: 16px; font-weight: 700; margin: 0 0 15px 0; color: #444; display: flex; align-items: center; gap: 8px; }
+        .section-separator { border-top: 1px solid #f0f0f0; margin: 15px 0; padding-top: 15px; }
+        .section-label { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: block; font-weight: 600; }
+        .timer-item { margin-bottom: 12px; }
+        .timer-label { font-size: 12px; color: #666; margin-bottom: 4px; display: block; font-weight: 500; text-align: left; }
+        .timer-control { display: flex; align-items: center; justify-content: space-between; background: #fafafa; padding: 2px; border-radius: 8px; border: 1px solid var(--border); }
+        .stepper { font-size: 24px; font-weight: 700; color: var(--primary); border: none; background: none; padding: 5px 12px; cursor: pointer; transition: 0.2s; }
+        .stepper:active { opacity: 0.6; transform: scale(0.92); }
+        .timer-value { font-size: 18px; font-weight: 700; color: #333; min-width: 30px; text-align: center; }
     </style>
 </head>
 <body>
 
-    <h1>Torre Hidropônica 🟢</h1>
+    <h1>Torre Hidropônica</h1>
     
     <div class="card">
-        <div id="display-timer" class="status-timer">☀️ DIA: Espera 00:00</div>
+        <div id="display-timer" class="status-header">☀️ DIA: Espera 00:00</div>
         
         <div class="grid">
             <button id="btnManual" class="btn btn-mode" onclick="setModo(false)">Manual</button>
@@ -35,67 +44,44 @@
 
         <div class="grid">
             <div>
-                <span class="timer-label">Bomba (R1)</span>
+                <span class="section-label">Bomba (R1)</span>
                 <button id="btnR1" class="btn btn-off" onclick="toggleR1()">OFF</button>
             </div>
             <div>
-                <span class="timer-label">Aux (R2)</span>
+                <span class="section-label">Aux (R2)</span>
                 <button id="btnR2" class="btn btn-off" onclick="toggleR2()">OFF</button>
             </div>
         </div>
     </div>
 
     <div class="card">
-        <h3 style="margin-top:0">⏱️ Controle de Tempo</h3>
+        <div class="timer-title">⏱️ Controle de Tempo</div>
+        
+        <span class="section-label">🚿 Configurações R1 (Bomba)</span>
         <div class="grid">
-            <div>
-                <span class="timer-label">Tempo Ligado Dia</span>
+            <div class="timer-item">
+                <span class="timer-label">Tempo Ligado Dia (min)</span>
                 <div class="timer-control">
                     <button class="stepper" onclick="changeTimer('tLD', -1)">-</button>
-                    <span id="val-tLD">1</span>
+                    <span id="val-tLD" class="timer-value">1</span>
                     <button class="stepper" onclick="changeTimer('tLD', 1)">+</button>
                 </div>
             </div>
-            <div>
-                <span class="timer-label">Tempo Ligado Noite</span>
+            <div class="timer-item">
+                <span class="timer-label">Tempo Desligado Dia (min)</span>
+                <div class="timer-control">
+                    <button class="stepper" onclick="changeTimer('tDD', -1)">-</button>
+                    <span id="val-tDD" class="timer-value">6</span>
+                    <button class="stepper" onclick="changeTimer('tDD', 1)">+</button>
+                </div>
+            </div>
+            <div class="timer-item">
+                <span class="timer-label">Tempo Ligado Noite (min)</span>
                 <div class="timer-control">
                     <button class="stepper" onclick="changeTimer('tLN', -1)">-</button>
-                    <span id="val-tLN">1</span>
+                    <span id="val-tLN" class="timer-value">1</span>
                     <button class="stepper" onclick="changeTimer('tLN', 1)">+</button>
                 </div>
             </div>
-            </div>
-    </div>
-
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-
-        function sendCmd(cmd) {
-            tg.sendData(cmd); // Envia o comando de volta para o Bot
-        }
-
-        function setModo(auto) {
-            document.getElementById('btnAuto').classList.toggle('btn-active', auto);
-            document.getElementById('btnManual').classList.toggle('btn-active', !auto);
-            sendCmd(auto ? "setmodo auto" : "setmodo manual");
-        }
-
-        function toggleR1() {
-            const btn = document.getElementById('btnR1');
-            const isOn = btn.innerText === "ON";
-            btn.innerText = isOn ? "OFF" : "ON";
-            btn.className = isOn ? "btn btn-off" : "btn btn-on";
-            sendCmd("toggle r1");
-        }
-
-        function changeTimer(varName, delta) {
-            const el = document.getElementById('val-' + varName);
-            let val = parseInt(el.innerText) + delta;
-            if(val < 1) val = 1;
-            el.innerText = val;
-            sendCmd("set" + varName + " " + val);
-        }
-    </script>
-</body>
-</html>
+            <div class="timer-item">
+                <span class="timer
